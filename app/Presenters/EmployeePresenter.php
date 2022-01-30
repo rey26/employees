@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use App\Model\GenderFacade;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Explorer;
@@ -9,10 +10,12 @@ use Nette\Database\Explorer;
 final class EmployeePresenter extends Presenter
 {
     private Explorer $database;
+    private GenderFacade $genderFacade;
 
-    public function __construct(Explorer $database)
+    public function __construct(Explorer $database, GenderFacade $genderFacade)
     {
         $this->database = $database;
+        $this->genderFacade = $genderFacade;
     }
 
     public function renderShow(int $employeeId): void
@@ -83,7 +86,7 @@ final class EmployeePresenter extends Presenter
         $form->addText('name', 'Name: ')->setRequired();
         $form->addInteger('age', 'Age: ')->setRequired();
 
-        $genders = [1 => 'Male', 2 => 'Female'];
+        $genders = $this->genderFacade->getGenders();
         $form->addSelect('gender_id', 'Gender', $genders);
 
         $form->addSubmit('send', 'Save');
