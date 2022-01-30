@@ -44,3 +44,11 @@ should be ready to go.
 
 **It is CRITICAL that whole `app/`, `config/`, `log/` and `temp/` directories are not accessible directly
 via a web browser. See [security warning](https://nette.org/security-warning).**
+
+Installation of Employees project
+------------
+1. composer install
+1. create database for this project
+1. create config/local.neon file and insert DB connection info
+1. restore db dump found in root: employees_dump.sql
+1. use php -S localhost:8000 -t www as mentioned in default part of this readme to run the app
