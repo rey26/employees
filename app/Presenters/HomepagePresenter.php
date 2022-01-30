@@ -20,6 +20,7 @@ final class HomepagePresenter extends Presenter
     {
         $this->template->employees = $this->database
             ->table('employees')
+            ->select('employees.*, gender.name AS gender_name')
             ->order('created_at DESC')
             ->limit(10);
     }

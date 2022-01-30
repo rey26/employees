@@ -22,6 +22,7 @@ final class EmployeePresenter extends Presenter
     {
         $employee = $this->database
             ->table('employees')
+            ->select('employees.*, gender.name AS gender_name')
             ->get($employeeId);
 
         if (!$employee) {
@@ -35,6 +36,7 @@ final class EmployeePresenter extends Presenter
     {
         $employee = $this->database
             ->table('employees')
+            ->select('employees.*, gender.id AS gender_id')
             ->get($employeeId);
 
         if (!$employee) {

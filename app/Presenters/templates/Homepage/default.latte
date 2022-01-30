@@ -16,8 +16,9 @@
                     <a n:href="Employee:show $employee->id">{$employee->name}</a>
                 </td>
                 <td>{$employee->age}</td>
-                <td>{$employee->gender_id}</td>
+                <td>{$employee->gender_name}</td>
                 <td>
+                    <a n:href="Employee:edit $employee->id" class="btn btn-warning">Edit</a>
                     <a n:href="Employee:delete $employee->id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
