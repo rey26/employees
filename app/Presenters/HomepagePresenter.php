@@ -4,24 +4,20 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
+use App\Model\EmployeeFacade;
 use Nette\Application\UI\Presenter;
-use Nette\Database\Explorer;
 
 final class HomepagePresenter extends Presenter
 {
-    private Explorer $database;
+    private EmployeeFacade $employeeFacade;
 
-    public function __construct(Explorer $database)
+    public function __construct(EmployeeFacade $employeeFacade)
     {
-        $this->database = $database;
+        $this->employeeFacade = $employeeFacade;
     }
 
     public function renderDefault(): void
     {
-        $this->template->employees = $this->database
-            ->table('employees')
-            ->select('employees.*, gender.name AS gender_name')
-            ->order('created_at DESC')
-            ->limit(10);
+        $this->template->employees = $this->employeeFacade->getAll();
     }
 }

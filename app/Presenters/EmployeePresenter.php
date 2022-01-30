@@ -2,28 +2,25 @@
 
 namespace App\Presenters;
 
+use App\Model\EmployeeFacade;
 use App\Model\GenderFacade;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
-use Nette\Database\Explorer;
 
 final class EmployeePresenter extends Presenter
 {
-    private Explorer $database;
+    private EmployeeFacade $employeeFacade;
     private GenderFacade $genderFacade;
 
-    public function __construct(Explorer $database, GenderFacade $genderFacade)
+    public function __construct(EmployeeFacade $employeeFacade, GenderFacade $genderFacade)
     {
-        $this->database = $database;
+        $this->employeeFacade = $employeeFacade;
         $this->genderFacade = $genderFacade;
     }
 
     public function renderShow(int $employeeId): void
     {
-        $employee = $this->database
-            ->table('employees')
-            ->select('employees.*, gender.name AS gender_name')
-            ->get($employeeId);
+        $employee = $this->employeeFacade->getById($employeeId);
 
         if (!$employee) {
             $this->error('Employee not found!');
@@ -34,30 +31,22 @@ final class EmployeePresenter extends Presenter
 
     public function renderEdit(int $employeeId): void
     {
-        $employee = $this->database
-            ->table('employees')
-            ->select('employees.*, gender.id AS gender_id')
-            ->get($employeeId);
+        $employee = $this->employeeFacade->getById($employeeId);
 
         if (!$employee) {
             $this->error('Employee not found');
         }
 
-        $this->getComponent('employeeForm')
-            ->setDefaults($employee->toArray());
+        $this->getComponent('employeeForm')->setDefaults($employee->toArray());
     }
 
     public function renderDelete(int $employeeId): void
     {
-        $employee = $this->database
-            ->table('employees')
-            ->get($employeeId);
+        $deletedSuccessfully = $this->employeeFacade->deleteById($employeeId);
 
-        if (!$employee) {
+        if ($deletedSuccessfully === false) {
             $this->error('Employee not found');
         }
-
-        $employee->delete();
 
         $this->flashMessage('Employee deleted', 'success');
         $this->redirect('Homepage:default');
@@ -68,18 +57,17 @@ final class EmployeePresenter extends Presenter
         $employeeId = $this->getParameter('employeeId');
 
         if ($employeeId) {
-            $employee = $this->database
-                ->table('employees')
-                ->get($employeeId);
-            $employee->update($data);
+            $returnedId = $this->employeeFacade->updateById($employeeId, $data);
+
+            if (!$returnedId) {
+                $this->error('Employee not found');
+            }
         } else {
-            $employee = $this->database
-            ->table('employees')
-            ->insert($data);
+            $returnedId = $this->employeeFacade->create($data);
         }
 
         $this->flashMessage('Employee saved', 'success');
-        $this->redirect('Employee:show', $employee->id);
+        $this->redirect('Employee:show', $returnedId);
     }
 
     protected function createComponentEmployeeForm(): Form
