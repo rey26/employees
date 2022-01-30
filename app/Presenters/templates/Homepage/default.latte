@@ -1,1 +1,26 @@
-HEllo world!
+{block content}
+	<div class="container">
+        <h2>List of employees</h2>
+        <a n:href="Employee:create" class="btn btn-success">Add new employee</a>
+        <table class="table">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th></th>
+            </tr>
+            <tr n:foreach="$employees as $employee">
+                <td>{$employee->id}</td>
+                <td>
+                    <a n:href="Employee:show $employee->id">{$employee->name}</a>
+                </td>
+                <td>{$employee->age}</td>
+                <td>{$employee->gender_id}</td>
+                <td>
+                    <a n:href="Employee:delete $employee->id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+{/block}
